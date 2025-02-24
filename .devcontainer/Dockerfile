@@ -32,7 +32,8 @@ WORKDIR /app
 COPY .. /app/
 
 # Даем разрешение на выполнение для mvnw
-RUN chmod +x /app/mvnw
+
+RUN chmod +x ./mvnw && ./mvnw clean install && npm run build
 
 # Собираем зависимости Maven
 RUN --mount=type=cache,id=s/3a29ac21-338f-4883-ba06-5fb2e4d64526-m2/repository,target=/app/.m2/repository /app/mvnw clean install
