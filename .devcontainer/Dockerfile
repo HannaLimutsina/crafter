@@ -25,3 +25,17 @@ RUN if [ "${NODE_VERSION}" != "none" ]; then su vscode -c "umask 0002 && . /usr/
 # RUN su vscode -c "source /usr/local/share/nvm/nvm.sh && npm install -g <your-package-here>" 2>&1
 #
 
+# Устанавливаем рабочую директорию внутри контейнера
+WORKDIR /app
+
+# Копируем все файлы проекта в контейнер в папку /app
+COPY .. /app/
+
+# Даем разрешение на выполнение для mvnw
+RUN chmod +x /app/mvnw
+
+# Собираем зависимости Maven
+RUN --mount=type=cache,id=s/3a29ac21-338f-4883-ba06-5fb2e4d64526-m2/repository,target=/app/.m2/repository /app/mvnw clean install
+
+# Строим фронтенд
+RUN npm run build --prefix /app/src/main/webapp
